@@ -12,7 +12,6 @@
     "dev:executor": "npm run dev --workspace=apps/execution-service",
     "dev:events": "npm run dev --workspace=apps/event-service",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:executor\" \"npm run dev:events\" \"npm run dev:frontend\"",
-    "postinstall": "npm run generate --workspace=packages/database",
     "build": "npm run build --workspaces",
     "lint": "npm run lint --workspaces"
   },

@@ -28,7 +28,8 @@ export default function TradePage({ params }: { params: { symbol: string } }) {
         let reconnectTimeout: NodeJS.Timeout;
 
         const connect = () => {
-            ws = new WebSocket(`ws://localhost:3003?token=${token}`);
+            const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:3003';
+            ws = new WebSocket(`${wsUrl}?token=${token}`);
 
             ws.onopen = () => console.log('User WS Connected');
 
@@ -112,7 +113,14 @@ export default function TradePage({ params }: { params: { symbol: string } }) {
         lastPriceRef.current = price;
     };
 
-    if (!user) return null;
+    useEffect(() => {
+        if (_hasHydrated && !user) {
+            router.push('/login');
+        }
+    }, [user, _hasHydrated, router]);
+
+    if (!_hasHydrated) return <div className="min-h-screen flex items-center justify-center bg-background text-foreground">Loading...</div>;
+    if (!user) return null; // Will redirect
 
     return (
         <ErrorBoundary>

@@ -1,12 +1,14 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
 const api = axios.create({
-    baseURL: 'http://localhost:3001/api', // Gateway URL
+    baseURL: `${API_URL}/api`, // Gateway URL
 });
 
 const authApi = axios.create({
-    baseURL: 'http://localhost:3001/auth',
+    baseURL: `${API_URL}/auth`,
 });
 
 api.interceptors.request.use((config) => {
