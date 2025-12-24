@@ -110,8 +110,8 @@ router.get('/positions', authMiddleware, async (req: any, res: any) => {
 
     const positions: Record<string, number> = {};
 
-    userOrders.forEach(order => {
-        const filled = order.events.find(e => e.status === 'FILLED');
+    userOrders.forEach((order: any) => {
+        const filled = order.events.find((e: any) => e.status === 'FILLED');
         if (!filled) return;
 
         if (!positions[order.symbol]) positions[order.symbol] = 0;
