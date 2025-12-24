@@ -107,7 +107,7 @@ Access the app at `http://localhost:3000`.
 
 ---
 
-## 🔮 Future Improvements (What I'd do with more time)
+##  Future Improvements (What I'd do with more time)
 1.  **High Availability**: Implement PostgreSQL with a connection pooler (PgBouncer) and Redis Cluster for higher throughput.
 2.  **Order Types**: Add Stop-Loss and Take-Profit order types to the matching engine.
 3.  **Authentication**: Add 2FA (Two-Factor Authentication) for enhanced security.
@@ -120,7 +120,7 @@ Access the app at `http://localhost:3000`.
 Per the assignment policy, LLM assistance was used for approximately ~15% of the codebase, primarily for:
 - Generating initial boilerplate for UI components.
 - Debugging specific Tailwind CSS syntax errors.
-- Writing Swagger/API documentation snippets.
+- Writing API documentation snippets.
 All architectural decisions, core logic, and state management were implemented manually.
 
 ---
