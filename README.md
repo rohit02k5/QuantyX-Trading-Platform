@@ -129,6 +129,6 @@ All architectural decisions, core logic, and state management were implemented m
 - **Live Frontend**: [https://quantyx-live.vercel.app](https://quantyx-live.vercel.app)
 - **Live Backend (API)**: [https://quantyx-backend-production.up.railway.app](https://quantyx-backend-production.up.railway.app)
 - **Live Backend (WS)**: [wss://quantyx-events-production.up.railway.app](wss://quantyx-events-production.up.railway.app)
-- **Demo Video**: [Link to YouTube Video]
+- **Demo Video**: https://drive.google.com/file/d/1tYQqVc_MrsCb6G3iCqUtir8IwDKpFD7E/view?usp=sharing
 
 ---
