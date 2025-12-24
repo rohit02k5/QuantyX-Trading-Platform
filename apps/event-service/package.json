@@ -1,0 +1,24 @@
+{
+    "name": "numatix-event-service",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "dev": "tsx watch src/index.ts",
+        "build": "tsc"
+    },
+    "dependencies": {
+        "dotenv": "^16.3.1",
+        "ioredis": "^5.3.2",
+        "ws": "^8.16.0",
+        "jsonwebtoken": "^9.0.2",
+        "numatix-types": "*",
+        "numatix-database": "*"
+    },
+    "devDependencies": {
+        "tsx": "^4.7.0",
+        "typescript": "^5.3.3",
+        "@types/ws": "^8.5.10",
+        "@types/jsonwebtoken": "^9.0.5",
+        "@types/node": "^20.10.6"
+    }
+}

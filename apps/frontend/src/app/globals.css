@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #0b0e11;
+    --card: #f3f4f6;
+    --input: #e5e7eb;
+    --buy: #0ECB81;
+    --sell: #F6465D;
+    --primary: #FCD535;
+    --muted: #848E9C;
+    --border: #e5e7eb;
+  }
+
+  [data-theme='dark'] {
+    /* Premium Midnight Palette */
+    --background: #0b0e11;
+    /* Deepest Obsidian */
+    --foreground: #EAECEF;
+    /* Bright White-ish Gray */
+    --card: #181a20;
+    /* Slightly Lighter Obsidian for panels */
+    --input: #2B3139;
+    /* Steel Gray for inputs */
+    --primary: #FCD535;
+    /* Binance Yellow */
+    --buy: #0ECB81;
+    /* Vibrant Green */
+    --sell: #F6465D;
+    /* Vibrant Red */
+    --muted: #848E9C;
+    /* Muted Text */
+    --border: #2B3139;
+    /* Subtle Border */
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-inter);
+}
+
+/* Custom Utilities for "Peak" Look */
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Scrollbar Polish */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2B3139;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #474D57;
+}
+
+/* Glassmorphism Header */
+.glass-header {
+  background: rgba(24, 26, 32, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Trading Input Styles */
+.trade-input-group {
+  @apply relative flex items-center bg-input rounded hover:border-primary border border-transparent transition-colors;
+}
+
+.trade-input-group:focus-within {
+  @apply border-primary;
+}

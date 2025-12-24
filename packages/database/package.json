@@ -1,0 +1,19 @@
+{
+    "name": "numatix-database",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "db:push": "prisma db push",
+        "db:studio": "prisma studio",
+        "generate": "prisma generate"
+    },
+    "dependencies": {
+        "@prisma/client": "^5.7.1"
+    },
+    "devDependencies": {
+        "prisma": "^5.7.1",
+        "typescript": "^5.3.3"
+    }
+}

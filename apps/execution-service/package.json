@@ -1,0 +1,23 @@
+{
+    "name": "numatix-execution-service",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "dev": "tsx watch src/index.ts",
+        "build": "tsc"
+    },
+    "dependencies": {
+        "dotenv": "^16.3.1",
+        "ioredis": "^5.3.2",
+        "axios": "^1.6.5",
+        "crypto-js": "^4.2.0",
+        "numatix-types": "*",
+        "numatix-database": "*"
+    },
+    "devDependencies": {
+        "tsx": "^4.7.0",
+        "typescript": "^5.3.3",
+        "@types/crypto-js": "^4.2.1",
+        "@types/node": "^20.10.6"
+    }
+}

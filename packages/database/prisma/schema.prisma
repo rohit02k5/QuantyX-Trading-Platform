@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  passwordHash    String
+  binanceApiKey   String? // Encrypted
+  binanceSecretKey String? // Encrypted
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  orders          OrderCommand[]
+  orderEvents     OrderEvent[]
+}
+
+model OrderCommand {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  symbol    String
+  side      String   // BUY, SELL
+  type      String   // MARKET, LIMIT
+  quantity  Float
+  price     Float?
+  status    String   // PENDING, PROCESSED, FAILED
+  createdAt DateTime @default(now())
+
+  events    OrderEvent[]
+}
+
+model OrderEvent {
+  id             String       @id @default(uuid())
+  orderId        String
+  order          OrderCommand @relation(fields: [orderId], references: [id])
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  status         String       // FILLED, REJECTED, PARTIALLY_FILLED
+  price          Float?
+  quantity       Float
+  timestamp      DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+}

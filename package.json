@@ -1,0 +1,23 @@
+{
+  "name": "fullstack-assignment-numatix",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev --workspace=apps/backend",
+    "dev:frontend": "npm run dev --workspace=apps/frontend",
+    "dev:executor": "npm run dev --workspace=apps/execution-service",
+    "dev:events": "npm run dev --workspace=apps/event-service",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:executor\" \"npm run dev:events\" \"npm run dev:frontend\"",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.3",
+    "@types/node": "^20.10.6"
+  }
+}
