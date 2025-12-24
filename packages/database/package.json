@@ -7,7 +7,7 @@
         "build": "tsc",
         "db:push": "prisma db push",
         "db:studio": "prisma studio",
-        "generate": "prisma generate"
+        "generate": "npx prisma generate"
     },
     "dependencies": {
         "@prisma/client": "^5.7.1"

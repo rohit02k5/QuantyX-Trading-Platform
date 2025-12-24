@@ -36,3 +36,5 @@ pnpm-debug.log*
 .vscode
 .idea
 coverage
+
+.vercel
