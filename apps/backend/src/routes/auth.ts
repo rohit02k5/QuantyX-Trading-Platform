@@ -57,6 +57,7 @@ router.post('/login', async (req, res) => {
         const token = signToken({ userId: user.id, email: user.email });
         res.json({ token, user: { id: user.id, email: user.email } });
     } catch (error) {
+        console.error('Login error:', error);
         res.status(500).json({ error: 'Login failed' });
     }
 });
