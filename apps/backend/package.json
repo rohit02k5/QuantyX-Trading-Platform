@@ -20,7 +20,7 @@
         "jsonwebtoken": "^9.0.2",
         "numatix-database": "*",
         "numatix-types": "*",
-        "zod": "^4.2.1"
+        "zod": "^3.22.4"
     },
     "devDependencies": {
         "@types/bcryptjs": "^2.4.6",

@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { prisma } from 'numatix-database';
 import Redis from 'ioredis';
 import { CONFIG } from '../config';
@@ -35,11 +35,11 @@ export const orderSchema = z.object({
     return true;
 }, { message: "Price/StopPrice required for Limit/Stop orders" });
 
-router.post('/orders', authMiddleware, orderLimiter, async (req: any, res: any) => {
+router.post('/orders', authMiddleware, orderLimiter, async (req: Request, res: Response) => {
     try {
         const validation = orderSchema.safeParse(req.body);
         if (!validation.success) {
-            return res.status(400).json({ error: validation.error.errors });
+            return res.status(400).json({ error: validation.error.issues });
         }
 
         const authReq = req as AuthenticatedRequest;
@@ -83,7 +83,7 @@ router.post('/orders', authMiddleware, orderLimiter, async (req: any, res: any) 
     }
 });
 
-router.get('/orders', authMiddleware, async (req: any, res: any) => {
+router.get('/orders', authMiddleware, async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
     if (!authReq.userId) return res.sendStatus(401);
 
@@ -95,7 +95,7 @@ router.get('/orders', authMiddleware, async (req: any, res: any) => {
     res.json(orders);
 });
 
-router.get('/positions', authMiddleware, async (req: any, res: any) => {
+router.get('/positions', authMiddleware, async (req: Request, res: Response) => {
     const authReq = req as AuthenticatedRequest;
     if (!authReq.userId) return res.sendStatus(401);
 
@@ -128,7 +128,7 @@ router.get('/positions', authMiddleware, async (req: any, res: any) => {
     res.json(posArray);
 });
 
-router.delete('/orders/:id', authMiddleware, async (req: any, res: any) => {
+router.delete('/orders/:id', authMiddleware, async (req: Request, res: Response) => {
     try {
         const authReq = req as AuthenticatedRequest;
         const userId = authReq.userId!;

@@ -69,7 +69,7 @@ JWT_SECRET="your-secret-key"
 REDIS_URL="redis://localhost:6379"
 PORT=3000
 ```
-
+#inlcude<i>
 ### 3. Database Setup
 ```bash
 npx prisma db push
