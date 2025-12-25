@@ -1,134 +1,228 @@
-# QuantyX - Real-Time Trading Platform (Testnet)
+# QuantyX — Real-Time Event-Driven Trading Platform
 
-## Overview
-QuantyX is a full-stack real-time trading platform designed to simulate a crypto exchange environment. It demonstrates a distributed architecture using **Next.js**, **Express**, **Redis**, and **WebSockets** to handle order execution and real-time market data updates.
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Architecture](https://img.shields.io/badge/architecture-event--driven-success.svg)
+![Status](https://img.shields.io/badge/status-live-success.svg)
 
-**Note:** This is a **Testnet Assignment** project. No real funds are used. Authenticated users interact with a simulated matching engine or the Binance Testnet (sandbox mode).
+QuantyX is a real-time trading platform designed to simulate the architecture and performance characteristics of a modern crypto exchange.
+
+Unlike traditional CRUD-based applications, QuantyX is built around an event-driven microservices architecture, decoupling order ingestion, execution, and real-time broadcasting to achieve low latency, horizontal scalability, and fault isolation.
+
+This project was built to demonstrate distributed systems design, real-time data flow, and production deployment practices.
+
+---
+
+## Live Demo & Resources
+
+| Component | URL | Status |
+|---------|-----|--------|
+| Frontend (Next.js) | https://quantyx-live.vercel.app | Live |
+| API Gateway | https://quantyx-backend-production.up.railway.app | Live |
+| WebSocket Event Stream | wss://quantyx-events-production.up.railway.app | Live |
+| Demo Walkthrough Video | https://drive.google.com/file/d/1tYQqVc_MrsCb6G3iCqUtir8IwDKpFD7E/view | Available |
+
+---
+
+<img width="791" height="887" alt="Screenshot 2025-12-25 154212" src="https://github.com/user-attachments/assets/6d7bf4dc-38ec-4291-9bfa-ae389c6aed71" />
+<img width="1291" height="710" alt="Screenshot 2025-12-25 154206" src="https://github.com/user-attachments/assets/9ceb14a8-a7ec-41db-8bfb-bf12f7b162e6" />
+<img width="1405" height="773" alt="Screenshot 2025-12-25 154148" src="https://github.com/user-attachments/assets/d293bd51-5d1e-47f1-bbd3-1d7fb15704c6" />
+<img width="1799" height="736" alt="Screenshot 2025-12-25 154140" src="https://github.com/user-attachments/assets/5528ff50-9b37-4ff3-80c3-755ab26159dc" />
+<img width="1919" height="878" alt="Screenshot 2025-12-25 154106" src="https://github.com/user-attachments/assets/8020b816-f7af-4756-83c3-9796b87fb75c" />
+
+
+## Why QuantyX Is Different
+
+Most trading applications are simple REST APIs backed by a database.
+
+QuantyX models how real exchanges operate:
+
+- Non-blocking order submission
+- Asynchronous order execution
+- Real-time client updates via WebSockets
+- Clear separation of concerns across services
+- Message-driven processing using Redis
+
+This design allows the platform to handle request bursts, prevent API overload, scale execution independently, and deliver instant UI updates.
+
+---
+
+## Core Features
+
+### Frontend — Professional Trading Terminal
+- Next.js 14 (App Router) with TypeScript
+- TradingView Lightweight Charts with live Binance WebSocket feeds
+- Zero-refresh UI with real-time order and position updates
+- Zustand and React Query for predictable state and cache management
+- Glassmorphism-inspired dark UI with smooth micro-interactions
+
+### Backend — Event-Driven Microservices
+- API Gateway for authentication, validation, and rate limiting
+- Execution Worker for order matching and balance updates
+- Event Service for real-time WebSocket broadcasting
+- Redis Pub/Sub as the messaging backbone
+- PostgreSQL with Prisma ORM for transactional consistency
+
+### Security and Reliability
+- JWT-based authentication using HttpOnly cookies
+- Bcrypt password hashing
+- Proxy-aware rate limiting
+- Shared Zod schemas for strict request and response validation
+- Safe handling of Binance Testnet API keys
 
 ---
 
 ## System Architecture
 
-The system follows an event-driven microservices architecture:
-
 ```mermaid
-graph LR
-    User[User/Frontend] -->|HTTP/REST| API[API Gateway]
-    User -->|WebSocket| WS[Event Service]
-    
-    API -->|Commands| RedisPub[Redis Command Bus]
-    RedisPub -->|Subscribe| Exec[Execution Service]
-    
-    Exec -->|Execute| Matching[Matching Engine / Binance]
-    Matching -->|Result| Exec
-    
-    Exec -->|Events| RedisSub[Redis Event Bus]
-    RedisSub -->|Subscribe| WS
-    WS -->|Broadcast| User
-    
-    API --> DB[(Database)]
-    Exec --> DB
-```
+graph TD
+    Client[User Client]
 
-### Key Components
-1.  **Frontend (Next.js)**: Real-time UI with TradingView charts, order forms, and position tracking.
-2.  **API Gateway (Express)**: Handles Auth (JWT), REST endpoints, and publishes order commands to Redis.
-3.  **Redis**: Acts as the message broker for decoupling order intake from execution.
-4.  **Execution Service**: Consumes commands, executes simulated trades (or calls Binance Testnet), and publishes results.
-5.  **Event Service**: Broadcasts `ORDER_FILLED` and `ORDER_UPDATE` events to connected clients via WebSockets.
+    subgraph Frontend
+        UI[Trading UI]
+        Charts[Live Charts]
+    end
 
----
+    subgraph Backend Services
+        API[API Gateway]
+        Exec[Execution Worker]
+        Events[Event Service]
+    end
 
-##  Tech Stack
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS, Lightweight Charts, React Hot Toast
-- **Backend**: Node.js, Express.js, TypeScript
-- **Database**: SQLite (via Prisma ORM)
-- **Message Broker**: Redis (Pub/Sub)
-- **Authentication**: JWT (JSON Web Tokens) with Bcrypt password hashing
+    subgraph Infrastructure
+        Redis[(Redis Pub/Sub)]
+        DB[(PostgreSQL)]
+    end
 
----
+    Client -->|REST| API
+    Client -->|WebSocket| Events
 
-##  Setup & Installation
+    API -->|Publish Order| Redis
+    Redis -->|Consume Order| Exec
 
-### Prerequisites
-- Node.js (v18+)
-- Redis (running locally or cloud)
+    Exec -->|Write Trades| DB
+    Exec -->|Publish Result| Redis
 
-### 1. Clone & Install
-```bash
-git clone <repo-url>
-cd quantyx
+    Redis -->|Consume Result| Events
+    Events -->|Push Updates| Client
+Execution Flow
+
+User submits an order to the API Gateway.
+
+The API validates authentication and balance, then publishes the order to Redis.
+
+The Execution Worker consumes the order, executes trade logic, updates the database, and publishes the result.
+
+The Event Service consumes execution events and pushes real-time updates to the connected client.
+
+Tech Stack
+Frontend
+
+Framework: Next.js 14
+
+Language: TypeScript
+
+Styling: Tailwind CSS
+
+State Management: Zustand, React Query
+
+Realtime Communication: Native WebSocket API
+
+Backend
+
+Runtime: Node.js (Alpine Linux)
+
+Framework: Express.js
+
+Messaging: Redis Pub/Sub
+
+Database: PostgreSQL
+
+ORM: Prisma
+
+Validation: Zod (shared across frontend and backend)
+
+Infrastructure
+
+Monorepo managed using NPM Workspaces
+
+Docker with multi-stage builds
+
+Deployment:
+
+Frontend on Vercel
+
+Backend services on Railway
+
+Monorepo Structure
+QuantyX
+ ┣ apps
+ ┃ ┣ backend            # REST API Gateway
+ ┃ ┣ execution-service  # Order processing worker
+ ┃ ┣ event-service      # WebSocket broadcaster
+ ┃ ┗ frontend           # Next.js trading interface
+ ┣ packages
+ ┃ ┣ database           # Shared Prisma client and schema
+ ┃ ┗ types              # Shared TypeScript interfaces and Zod schemas
+ ┣ Dockerfile
+ ┗ package.json
+
+
+Local Development
+Prerequisites
+
+Node.js 18 or higher
+
+PostgreSQL
+
+Redis
+
+Installation
+git clone https://github.com/rohit02k5/QuantyX-Trading-Platform.git
+cd QuantyX-Trading-Platform
 npm install
-```
 
-### 2. Environment Variables
-Create a `.env` file in the root directory (see `.env.example`).
-```env
-DATABASE_URL="file:./dev.db"
-JWT_SECRET="your-secret-key"
-REDIS_URL="redis://localhost:6379"
+Environment Configuration
+
+Create a .env file in the root directory:
+DATABASE_URL=postgresql://postgres:password@localhost:5432/quantyx
+REDIS_URL=redis://localhost:6379
+JWT_SECRET=dev_secret
 PORT=3000
-```
-#inlcude<i>
-### 3. Database Setup
-```bash
-npx prisma db push
+
+Database Setup
 npx prisma generate
-```
+npx prisma db push
 
-### 4. Run Locally
-```bash
+Running Locally
 npm run dev
-```
-Access the app at `http://localhost:3000`.
 
----
+Deployment Overview
+Backend (Railway)
 
-## 📖 API Documentation
+Single repository deployed as multiple services
 
-### Authentication
-- `POST /auth/register`: Create a new account.
-- `POST /auth/login`: Authenticate and receive JWT.
+Shared Docker image with independent service entrypoints
 
-### Trading
-- `POST /api/trading/orders`: Submit a new order (published to Redis).
-- `GET /api/trading/orders`: Fetch order history.
-- `GET /api/trading/positions`: Fetch current positions.
+Proxy-aware configuration for correct rate limiting and IP handling
 
-### WebSockets
-- `ws://localhost:3003`: Connect for real-time order updates.
+Frontend (Vercel)
 
----
+Root directory set to apps/frontend
 
-## Trade-offs & Design Decisions
-1.  **SQLite vs Postgres**: Used SQLite for ease of local development and submission checking. In production, this would be swapped for PostgreSQL.
-2.  **Polling vs WebSocket for Balance**: While Order/Price updates are strictly WebSocket-driven, balance checks use a hybrid approach (event-driven updates + periodic polling) to ensure eventual consistency.
-3.  **In-Memory Caching**: Implemented a short TTL cache for specific read-heavy operations to prevent rate-limiting in the simulation layer.
+Environment-based API and WebSocket URLs
 
----
+SPA routing handled via platform rewrites
+Engineering Highlights
 
-##  Future Improvements (What I'd do with more time)
-1.  **High Availability**: Implement PostgreSQL with a connection pooler (PgBouncer) and Redis Cluster for higher throughput.
-2.  **Order Types**: Add Stop-Loss and Take-Profit order types to the matching engine.
-3.  **Authentication**: Add 2FA (Two-Factor Authentication) for enhanced security.
-4.  **Testing**: Increase unit test coverage for the matching engine and integration tests for the full flow.
-5.  **CI/CD**: Set up GitHub Actions for automated testing and deployment pipelines.
+Strong type safety across frontend and backend via shared schemas
 
----
+Fully non-blocking API layer using asynchronous execution
 
-##  LLM Usage Disclaimer
-Per the assignment policy, LLM assistance was used for approximately ~15% of the codebase, primarily for:
-- Generating initial boilerplate for UI components.
-- Debugging specific Tailwind CSS syntax errors.
-- Writing API documentation snippets.
-All architectural decisions, core logic, and state management were implemented manually.
+Redis-based message passing to isolate failures
 
----
+Docker Alpine compatibility through Prisma binary target configuration
+Author
 
-##  Deployment & Demo
-- **Live Frontend**: [https://quantyx-live.vercel.app](https://quantyx-live.vercel.app)
-- **Live Backend (API)**: [https://quantyx-backend-production.up.railway.app](https://quantyx-backend-production.up.railway.app)
-- **Live Backend (WS)**: [wss://quantyx-events-production.up.railway.app](wss://quantyx-events-production.up.railway.app)
-- **Demo Video**: https://drive.google.com/file/d/1tYQqVc_MrsCb6G3iCqUtir8IwDKpFD7E/view?usp=sharing
-
----
+Rohit
+B.Tech Electrical Engineering, IIT Bhilai
